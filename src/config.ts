@@ -19,6 +19,8 @@ export interface PlatformConfig {
 
 export function loadConfig(configPath?: string): PlatformConfig {
   const p = configPath || path.join(process.cwd(), "gateway.config.yaml");
-  const raw = fs.readFileSync(p, "utf-8");
+  let raw = fs.readFileSync(p, "utf-8");
+  // Replace ${ENV_VAR} placeholders with actual environment variables
+  raw = raw.replace(/\$\{(\w+)\}/g, (_, key) => process.env[key] || "");
   return yaml.load(raw) as PlatformConfig;
 }
