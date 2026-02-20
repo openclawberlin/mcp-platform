@@ -6,19 +6,29 @@ auth:
   type: api-key
 
 servers:
-  github:
-    command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-everything"]
-    env: {}
-    pricing:
-      default: 0.01
-
   firecrawl:
     command: "npx"
-    args: ["-y", "@modelcontextprotocol/server-everything"]
-    env: {}
+    args: ["-y", "firecrawl-mcp"]
+    env:
+      FIRECRAWL_API_KEY: "${FIRECRAWL_API_KEY}"
     pricing:
       default: 0.05
+
+  exa:
+    command: "npx"
+    args: ["-y", "exa-mcp-server"]
+    env:
+      EXA_API_KEY: "${EXA_API_KEY}"
+    pricing:
+      default: 0.03
+
+  fal:
+    command: "npx"
+    args: ["-y", "fal-ai-mcp-server"]
+    env:
+      FAL_KEY: "${FAL_KEY}"
+    pricing:
+      default: 0.10
 
 billing:
   currency: "USD"
