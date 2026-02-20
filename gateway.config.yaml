@@ -1,0 +1,28 @@
+platform:
+  name: "MCP Platform"
+  port: 3000
+
+auth:
+  type: api-key
+
+servers:
+  github:
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-everything"]
+    env: {}
+    pricing:
+      default: 0.01
+
+  firecrawl:
+    command: "npx"
+    args: ["-y", "@modelcontextprotocol/server-everything"]
+    env: {}
+    pricing:
+      default: 0.05
+
+billing:
+  currency: "USD"
+  default_credits: 10.00
+
+rate_limits:
+  default: 100
