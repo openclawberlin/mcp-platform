@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP Platform — One Gateway. One Balance. Full Control.</title>
+<meta name="description" content="Unified authentication, billing, and access management for all your MCP servers.">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0d1117;--card:#161b22;--card-border:#30363d;--text:#e6edf3;--text-muted:#8b949e;--accent-blue:#3b82f6;--accent-purple:#a855f7;--gradient:linear-gradient(135deg,var(--accent-blue),var(--accent-purple));--green:#3fb950;--orange:#d29922;--red:#f85149;--font:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;--mono:'SF Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace}
+html{scroll-behavior:smooth;background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.6;font-size:16px}
+body{overflow-x:hidden}
+a{color:var(--accent-blue);text-decoration:none}
+a:hover{text-decoration:underline}
+.container{max-width:1100px;margin:0 auto;padding:0 24px}
+section{padding:100px 0}
+.fade-in{opacity:0;transform:translateY(30px);transition:opacity .6s ease,transform .6s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(13,17,23,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--card-border);padding:14px 0}
+nav .container{display:flex;align-items:center;justify-content:space-between}
+nav .logo{font-weight:700;font-size:1.1rem;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+nav .links{display:flex;gap:24px;font-size:.875rem}
+nav .links a{color:var(--text-muted);transition:color .2s}
+nav .links a:hover{color:var(--text);text-decoration:none}
+@media(max-width:640px){nav .links{display:none}}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding-top:80px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,.12),transparent 70%);top:-100px;right:-200px}
+.hero::after{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(168,85,247,.1),transparent 70%);bottom:-100px;left:-150px}
+.hero .content{position:relative;z-index:1}
+.badge{display:inline-block;padding:6px 16px;border-radius:99px;font-size:.8rem;font-weight:600;background:rgba(59,130,246,.15);color:var(--accent-blue);border:1px solid rgba(59,130,246,.3);margin-bottom:24px}
+h1{font-size:clamp(2.8rem,6vw,4.5rem);font-weight:800;letter-spacing:-.03em;margin-bottom:12px;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .subtitle{font-size:clamp(1.2rem,2.5vw,1.6rem);color:var(--text);font-weight:600;margin-bottom:12px}
+.hero .subtext{font-size:1.05rem;color:var(--text-muted);max-width:560px;margin:0 auto 36px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 32px;border-radius:10px;font-weight:600;font-size:1rem;border:none;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.btn-primary{background:var(--gradient);color:#fff;box-shadow:0 4px 20px rgba(59,130,246,.3)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(59,130,246,.4);text-decoration:none;color:#fff}
+.btn-outline{background:transparent;border:1px solid var(--card-border);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent-blue);text-decoration:none;color:var(--accent-blue)}
+.hero-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+/* Section titles */
+.section-title{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:800;letter-spacing:-.02em;margin-bottom:12px}
+.section-subtitle{color:var(--text-muted);font-size:1.05rem;max-width:640px;margin-bottom:48px}
+.section-label{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px}
+
+/* Cards grid */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.card{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:28px;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--accent-blue);transform:translateY(-3px)}
+.card .icon{font-size:1.8rem;margin-bottom:12px}
+.card h3{font-size:1.05rem;font-weight:700;margin-bottom:8px}
+.card p{color:var(--text-muted);font-size:.9rem;line-height:1.6}
+
+/* Story */
+.story{color:var(--text-muted);font-size:1.05rem;max-width:700px;line-height:1.8;margin-bottom:48px}
+.story strong{color:var(--text)}
+
+/* Before/After */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px}
+@media(max-width:768px){.compare{grid-template-columns:1fr}}
+.compare-col{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:32px;position:relative;overflow:hidden}
+.compare-col.before::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red)}
+.compare-col.after::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--green)}
+.compare-col h3{font-size:1.1rem;font-weight:700;margin-bottom:20px}
+.compare-col.before h3{color:var(--red)}
+.compare-col.after h3{color:var(--green)}
+.flow-line{display:flex;align-items:center;gap:8px;padding:6px 0;font-size:.88rem;color:var(--text-muted);flex-wrap:wrap}
+.flow-line .arrow{color:var(--card-border);font-family:var(--mono)}
+.flow-line span{white-space:nowrap}
+.compare-result{margin-top:20px;padding-top:16px;border-top:1px solid var(--card-border);font-size:.9rem;font-weight:600}
+.compare-col.before .compare-result{color:var(--red)}
+.compare-col.after .compare-result{color:var(--green)}
+
+/* Architecture */
+.arch{display:flex;flex-direction:column;align-items:center;gap:0;margin:48px 0;font-family:var(--mono);font-size:.85rem}
+.arch-box{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:24px 40px;text-align:center;position:relative}
+.arch-box.main{border-color:transparent;background:var(--card);box-shadow:0 0 0 2px rgba(59,130,246,.4)}
+.arch-box.main h4{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.1rem;margin-bottom:4px}
+.arch-box.main p{color:var(--text-muted);font-size:.8rem}
+.arch-arrow{color:var(--accent-blue);font-size:1.2rem;padding:6px 0}
+.arch-label{font-size:.75rem;color:var(--text-muted);padding:2px 0}
+.arch-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.arch-service{background:var(--card);border:1px solid var(--card-border);border-radius:8px;padding:14px 20px;text-align:center;font-family:var(--font)}
+.arch-service .name{font-weight:700;font-size:.9rem}
+.arch-service .desc{color:var(--text-muted);font-size:.75rem}
+.arch-agents{background:var(--card);border:1px solid var(--card-border);border-radius:8px;padding:14px 24px;font-family:var(--font);color:var(--text-muted);font-size:.9rem}
+
+/* Comparison table */
+.table-wrap{overflow-x:auto;margin-top:32px;border-radius:12px;border:1px solid var(--card-border)}
+table{width:100%;border-collapse:collapse;font-size:.88rem}
+th,td{padding:14px 18px;text-align:left;border-bottom:1px solid var(--card-border)}
+th{background:var(--card);font-weight:700;white-space:nowrap}
+th:last-child{background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(168,85,247,.1))}
+td:last-child{font-weight:600}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.diff-text{margin-top:32px;font-size:1.05rem;color:var(--text-muted);max-width:700px;line-height:1.7}
+.diff-text strong{color:var(--text)}
+
+/* Checklist */
+.checklist{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:32px}
+@media(max-width:768px){.checklist{grid-template-columns:1fr}}
+.check-group h3{font-size:1.05rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.check-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-size:.92rem;color:var(--text-muted);line-height:1.5}
+.check-item .mark{flex-shrink:0;font-size:1rem}
+
+/* Dashboard mockup */
+.dashboard-mock{background:var(--card);border:1px solid var(--card-border);border-radius:12px;overflow:hidden;margin-top:32px}
+.dash-topbar{background:#0d1117;padding:12px 20px;border-bottom:1px solid var(--card-border);display:flex;align-items:center;gap:8px}
+.dash-dot{width:10px;height:10px;border-radius:50%;background:var(--card-border)}
+.dash-dot.r{background:#f85149}.dash-dot.y{background:#d29922}.dash-dot.g{background:#3fb950}
+.dash-body{padding:28px}
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+@media(max-width:640px){.dash-stats{grid-template-columns:repeat(2,1fr)}}
+.dash-stat{background:var(--bg);border:1px solid var(--card-border);border-radius:8px;padding:18px}
+.dash-stat .label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+.dash-stat .value{font-size:1.6rem;font-weight:800;font-family:var(--mono);margin-top:4px}
+.dash-stat .value.blue{color:var(--accent-blue)}
+.dash-stat .value.purple{color:var(--accent-purple)}
+.dash-stat .value.green{color:var(--green)}
+.dash-stat .value.orange{color:var(--orange)}
+.dash-feed{background:var(--bg);border:1px solid var(--card-border);border-radius:8px;padding:16px}
+.dash-feed h4{font-size:.8rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px}
+.feed-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(48,54,61,.5);font-size:.82rem;color:var(--text-muted)}
+.feed-item:last-child{border-bottom:none}
+.feed-item .tool{color:var(--text);font-weight:600;font-family:var(--mono)}
+.feed-item .cost{color:var(--green);font-family:var(--mono)}
+.feed-item .time{font-family:var(--mono);font-size:.75rem}
+
+/* CTA */
+.cta-section{text-align:center;background:linear-gradient(180deg,transparent,rgba(59,130,246,.05),transparent);border-top:1px solid var(--card-border)}
+.code-block{background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:24px 28px;text-align:left;max-width:560px;margin:32px auto;font-family:var(--mono);font-size:.88rem;line-height:1.8;overflow-x:auto;color:var(--text-muted)}
+.code-block .cmd{color:var(--text)}
+.code-block .comment{color:#484f58}
+.cta-buttons{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+
+/* Footer */
+footer{padding:40px 0;text-align:center;color:var(--text-muted);font-size:.85rem;border-top:1px solid var(--card-border)}
+</style>
+</head>
+<body>
+
+<nav>
+<div class="container">
+<div class="logo">⚡ MCP Platform</div>
+<div class="links">
+<a href="#problem">Problem</a>
+<a href="#solution">Solution</a>
+<a href="#comparison">Comparison</a>
+<a href="#built">What We Built</a>
+<a href="https://github.com/openclawberlin/mcp-platform" target="_blank">GitHub</a>
+</div>
+</div>
+</nav>
+
+<section class="hero">
+<div class="content">
+<div class="badge">🏗️ Built at MCP Hackathon Berlin 2026</div>
+<h1>MCP Platform</h1>
+<p class="subtitle">One Gateway. One Balance. Full Control.</p>
+<p class="subtext">Unified authentication, billing, and access management for all your MCP servers</p>
+<div class="hero-buttons">
+<a href="https://github.com/openclawberlin/mcp-platform" target="_blank" class="btn btn-primary">View on GitHub →</a>
+<a href="#problem" class="btn btn-outline">Learn More ↓</a>
+</div>
+</div>
+</section>
+
+<section id="problem">
+<div class="container">
+<div class="fade-in">
+<div class="section-label">The Challenge</div>
+<h2 class="section-title">The MCP Sprawl Problem in Enterprise</h2>
+<div class="story">
+Companies are adopting AI coding tools — <strong>Cursor, Claude, Copilot</strong> — at enterprise scale. Developers connect <strong>MCP servers</strong> to boost productivity: Firecrawl for web scraping, Exa for search, fal.ai for image generation, and more. But each MCP server demands <strong>its own API key, its own registration, its own credit card</strong>. A typical developer uses <strong>5–10 MCP tools</strong>. Multiply that across a team and you have chaos.
+</div>
+</div>
+<div class="cards fade-in">
+<div class="card"><div class="icon">💸</div><h3>Billing Chaos</h3><p>Each developer manages 5–10 separate subscriptions. No central visibility of spend.</p></div>
+<div class="card"><div class="icon">🔓</div><h3>Security Risk</h3><p>API keys scattered across configs. MCP servers from untrusted sources. No audit trail.</p></div>
+<div class="card"><div class="icon">⚠️</div><h3>Zero Access Control</h3><p>Junior dev can call the same expensive tools as a senior. No rate limits, no role-based permissions.</p></div>
+<div class="card"><div class="icon">😵</div><h3>Admin Nightmare</h3><p>IT has no visibility into which tools are used, by whom, or how much they cost. Offboarding = hunting API keys.</p></div>
+</div>
+</div>
+</section>
+
+<section id="journey">
+<div class="container">
+<div class="fade-in">
+<div class="section-label">User Journey</div>
+<h2 class="section-title">Before vs After</h2>
+</div>
+<div class="compare fade-in">
+<div class="compare-col before">
+<h3>❌ Before MCP Platform</h3>
+<div class="flow-line"><span>Developer</span><span class="arrow">→</span><span>Register on Firecrawl</span><span class="arrow">→</span><span>Credit card</span><span class="arrow">→</span><span>API key</span><span class="arrow">→</span><span>Configure</span></div>
+<div class="flow-line"><span>Developer</span><span class="arrow">→</span><span>Register on Exa</span><span class="arrow">→</span><span>Credit card</span><span class="arrow">→</span><span>API key</span><span class="arrow">→</span><span>Configure</span></div>
+<div class="flow-line"><span>Developer</span><span class="arrow">→</span><span>Register on fal.ai</span><span class="arrow">→</span><span>Credit card</span><span class="arrow">→</span><span>API key</span><span class="arrow">→</span><span>Configure</span></div>
+<div class="flow-line"><span>Developer</span><span class="arrow">→</span><span>Register on GitHub</span><span class="arrow">→</span><span>Credit card</span><span class="arrow">→</span><span>API key</span><span class="arrow">→</span><span>Configure</span></div>
+<div class="flow-line"><span>Developer</span><span class="arrow">→</span><span>Register on Brave</span><span class="arrow">→</span><span>Credit card</span><span class="arrow">→</span><span>API key</span><span class="arrow">→</span><span>Configure</span></div>
+<div class="compare-result">5 registrations · 5 credit cards · 5 dashboards · 0 control</div>
+</div>
+<div class="compare-col after">
+<h3>✅ After MCP Platform</h3>
+<div class="flow-line"><span>Admin</span><span class="arrow">→</span><span>Configures MCP Platform once</span><span class="arrow">→</span><span>Adds all servers</span></div>
+<div class="flow-line"><span>Developer</span><span class="arrow">→</span><span>Gets one API key</span><span class="arrow">→</span><span>All 27 tools available</span></div>
+<div class="flow-line"><span>Finance</span><span class="arrow">→</span><span>One dashboard</span><span class="arrow">→</span><span>Full cost visibility</span></div>
+<div class="flow-line"><span>Security</span><span class="arrow">→</span><span>Audit log</span><span class="arrow">→</span><span>Every call tracked</span></div>
+<div class="compare-result">1 registration · 1 card · 1 dashboard · full control</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="solution">
+<div class="container">
+<div class="fade-in">
+<div class="section-label">The Solution</div>
+<h2 class="section-title">Your AI Tool Control Plane</h2>
+</div>
+<div class="arch fade-in">
+<div class="arch-agents">🤖 AI Agents — Cursor · Claude · Copilot · Custom</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-label">Single API Key</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-box main">
+<h4>⚡ MCP Platform</h4>
+<p>Auth · Billing · RBAC · Audit</p>
+</div>
+<div class="arch-arrow">↓</div>
+<div class="arch-row">
+<div class="arch-service"><div class="name">🔥 Firecrawl</div><div class="desc">Web Scraping</div></div>
+<div class="arch-service"><div class="name">🔍 Exa</div><div class="desc">AI Search</div></div>
+<div class="arch-service"><div class="name">🎨 fal.ai</div><div class="desc">Image Gen</div></div>
+<div class="arch-service"><div class="name">＋ More</div><div class="desc">Any MCP Server</div></div>
+</div>
+</div>
+<div class="cards fade-in">
+<div class="card"><div class="icon">🔑</div><h3>Unified Auth</h3><p>One API key per developer. OAuth2/SSO ready for enterprise.</p></div>
+<div class="card"><div class="icon">📊</div><h3>Usage Tracking</h3><p>Every tool call logged: who, what, when, how long, success/failure.</p></div>
+<div class="card"><div class="icon">💰</div><h3>Smart Billing</h3><p>Per-tool pricing, balance management, spend limits per team/user.</p></div>
+<div class="card"><div class="icon">🛡️</div><h3>Access Control</h3><p>Role-based permissions. Block expensive tools for certain roles. Rate limiting.</p></div>
+</div>
+</div>
+</section>
+
+<section id="comparison">
+<div class="container">
+<div class="fade-in">
+<div class="section-label">Landscape</div>
+<h2 class="section-title">Market & Competition</h2>
+</div>
+<div class="table-wrap fade-in">
+<table>
+<thead><tr><th>Feature</th><th>Hypr MCP Gateway</th><th>sigbit/mcp-auth-proxy</th><th>Casdoor</th><th>MCP Platform ⚡</th></tr></thead>
+<tbody>
+<tr><td>OAuth Proxy</td><td>✅</td><td>✅</td><td>✅</td><td>✅</td></tr>
+<tr><td>Multi-server aggregation</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+<tr><td>Per-tool billing</td><td>❌</td><td>❌</td><td>❌</td><td>✅</td></tr>
+<tr><td>Usage analytics</td><td>Partial</td><td>❌</td><td>❌</td><td>✅</td></tr>
+<tr><td>Real-time dashboard</td><td>❌</td><td>❌</td><td>✅</td><td>✅</td></tr>
+<tr><td>Tool-level RBAC</td><td>❌</td><td>❌</td><td>❌</td><td>🔜</td></tr>
+<tr><td>Open source</td><td>Partial</td><td>✅</td><td>✅</td><td>✅</td></tr>
+<tr><td>Language</td><td>Go</td><td>Go</td><td>Go</td><td>TypeScript</td></tr>
+</tbody>
+</table>
+</div>
+<div class="diff-text fade-in">
+Existing solutions focus on auth only — adding OAuth to a single MCP server. <strong>MCP Platform is the first to combine multi-server aggregation, per-tool billing, and usage analytics</strong> in one open-source gateway. Think of it as <strong>Stripe + Cloudflare for MCP</strong>.
+</div>
+</div>
+</section>
+
+<section id="built">
+<div class="container">
+<div class="fade-in">
+<div class="section-label">Hackathon MVP</div>
+<h2 class="section-title">Built in One Day</h2>
+</div>
+<div class="checklist fade-in">
+<div class="check-group">
+<h3><span style="color:var(--green)">●</span> What's Real</h3>
+<div class="check-item"><span class="mark">✅</span> HTTP/SSE proxy gateway aggregating 3 real MCP servers (27 tools)</div>
+<div class="check-item"><span class="mark">✅</span> API key authentication with SQLite backend</div>
+<div class="check-item"><span class="mark">✅</span> Per-tool usage tracking (timestamp, duration, input/output size)</div>
+<div class="check-item"><span class="mark">✅</span> Mock billing with per-tool costs and balance management</div>
+<div class="check-item"><span class="mark">✅</span> Real-time admin dashboard with live usage feed</div>
+<div class="check-item"><span class="mark">✅</span> 5 built-in platform tools + 3 MCP resources</div>
+<div class="check-item"><span class="mark">✅</span> Tested with real APIs: Firecrawl, Exa, fal.ai</div>
+</div>
+<div class="check-group">
+<h3><span style="color:var(--orange)">●</span> Roadmap</h3>
+<div class="check-item"><span class="mark">🔜</span> OAuth2/OIDC (currently API keys)</div>
+<div class="check-item"><span class="mark">🔜</span> Real payment processing via Stripe</div>
+<div class="check-item"><span class="mark">🔜</span> Tool-level RBAC policies</div>
+<div class="check-item"><span class="mark">🔜</span> Multi-tenant support</div>
+<div class="check-item"><span class="mark">🔜</span> npm package for easy installation</div>
+</div>
+</div>
+</div>
+</section>
+
+<section id="dashboard">
+<div class="container">
+<div class="fade-in">
+<div class="section-label">Dashboard</div>
+<h2 class="section-title">Real-time Monitoring</h2>
+<p class="section-subtitle">Every API call tracked. Every dollar accounted for.</p>
+</div>
+<div class="dashboard-mock fade-in">
+<div class="dash-topbar"><span class="dash-dot r"></span><span class="dash-dot y"></span><span class="dash-dot g"></span></div>
+<div class="dash-body">
+<div class="dash-stats">
+<div class="dash-stat"><div class="label">Total Calls</div><div class="value blue">52</div></div>
+<div class="dash-stat"><div class="label">Total Spent</div><div class="value purple">$4.87</div></div>
+<div class="dash-stat"><div class="label">Active Servers</div><div class="value green">3</div></div>
+<div class="dash-stat"><div class="label">Avg Latency</div><div class="value orange">263ms</div></div>
+</div>
+<div class="dash-feed">
+<h4>Live Usage Feed</h4>
+<div class="feed-item"><span><span class="tool">firecrawl_scrape</span> · dev_alice</span><span class="cost">$0.15</span><span class="time">2s ago</span></div>
+<div class="feed-item"><span><span class="tool">exa_search</span> · dev_bob</span><span class="cost">$0.05</span><span class="time">8s ago</span></div>
+<div class="feed-item"><span><span class="tool">fal_generate_image</span> · dev_alice</span><span class="cost">$0.25</span><span class="time">14s ago</span></div>
+<div class="feed-item"><span><span class="tool">firecrawl_map</span> · dev_charlie</span><span class="cost">$0.10</span><span class="time">31s ago</span></div>
+<div class="feed-item"><span><span class="tool">exa_find_similar</span> · dev_bob</span><span class="cost">$0.05</span><span class="time">45s ago</span></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+
+<section class="cta-section" id="cta">
+<div class="container">
+<div class="fade-in">
+<div class="section-label">Get Started</div>
+<h2 class="section-title">Try It Yourself</h2>
+<div class="code-block">
+<span class="cmd">git clone https://github.com/openclawberlin/mcp-platform</span><br>
+<span class="cmd">npm install && npm run build</span><br>
+<span class="comment"># Add your API keys to .env</span><br>
+<span class="cmd">npm start</span><br>
+<span class="comment"># Open http://localhost:3000/dashboard</span>
+</div>
+<div class="cta-buttons">
+<a href="https://github.com/openclawberlin/mcp-platform" target="_blank" class="btn btn-primary">⭐ Star on GitHub</a>
+<a href="https://github.com/openclawberlin/mcp-platform#readme" target="_blank" class="btn btn-outline">📖 Read the Docs</a>
+</div>
+</div>
+</div>
+</section>
+
+<footer>
+<div class="container">Built with ⚡ at MCP Hackathon Berlin 2026 · Open Source · MIT License</div>
+</footer>
+
+<script>
+const o=new IntersectionObserver(e=>{e.forEach(el=>{if(el.isIntersecting){el.target.classList.add('visible');o.unobserve(el.target)}})},{threshold:.15});
+document.querySelectorAll('.fade-in').forEach(el=>o.observe(el));
+</script>
+</body>
+</html>
